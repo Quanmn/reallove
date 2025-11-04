@@ -21,7 +21,6 @@
       z-index: 0;
     }
 
-    /* 💖 Chữ & tim rơi */
     .falling-item {
       position: absolute;
       font-weight: bold;
@@ -75,7 +74,6 @@
       transform: scale(1.05);
     }
 
-    /* 🌸 Responsive Design */
     @media (max-width: 1024px) {
       #music-toggle {
         font-size: 15px;
@@ -140,7 +138,6 @@
     window.addEventListener("resize", resize);
     resize();
 
-    // 🌌 Tạo nền sao
     for (let i = 0; i < 400; i++) {
       stars.push({
         x: Math.random() * w,
@@ -150,7 +147,6 @@
       });
     }
 
-    // 🌠 Tạo sao băng
     function createShootingStar() {
       const dir = Math.floor(Math.random() * 4);
       let x, y, vx, vy;
@@ -169,7 +165,6 @@
       lastTime = now;
       ctx.clearRect(0, 0, w, h);
 
-      // 🌌 Nền sao
       ctx.fillStyle = "white";
       for (let s of stars) {
         ctx.beginPath();
@@ -179,7 +174,6 @@
         if (s.y > h) s.y = 0;
       }
 
-      // 🌠 Sao băng
       ctx.lineWidth = 2;
       for (let i = shootingStars.length - 1; i >= 0; i--) {
         const s = shootingStars[i];
@@ -196,7 +190,6 @@
         if (s.alpha <= 0) shootingStars.splice(i, 1);
       }
 
-      // 🚀 tạo sao băng đều tay hơn
       starTimer += delta;
       if (starTimer > 200) {
         createShootingStar();
@@ -207,8 +200,6 @@
     }
     requestAnimationFrame(draw);
 
-    // 💞 Câu chữ & tim
-    // 💖 Các câu chữ định sẵn
     const lines = [
       "Tặng cho Minh Ánh nè 💌",
       "Cảm ơn em vì đã chọn anh 💞",
@@ -250,25 +241,36 @@
       createFallingItem(hearts[Math.floor(Math.random() * hearts.length)]);
     }
 
-    // 💞 Sinh hiệu ứng
     setInterval(() => createFallingItem(lines[Math.floor(Math.random() * lines.length)]), 900);
     setInterval(createHeart, 400);
 
-    // 🎵 Nhạc nền
+    // 🎵 Nhạc nền auto phát
     const music = document.getElementById("bg-music");
     const toggle = document.getElementById("music-toggle");
     let playing = false;
-    toggle.addEventListener("click", () => {
 
-  if (playing) {
+    function playMusic() {
+      music.play().then(() => {
+        playing = true;
+        toggle.textContent = "🔈 Tắt nhạc";
+      }).catch(() => {
+        // Nếu trình duyệt chặn, đợi người dùng click
+        toggle.textContent = "🔊 Bật nhạc";
+      });
+    }
+
+    // Tự động phát khi trang load
+    window.addEventListener("load", playMusic);
+
+    toggle.addEventListener("click", () => {
+      if (playing) {
         music.pause();
         toggle.textContent = "🔊 Bật nhạc";
+        playing = false;
       } else {
-        music.play();
-        toggle.textContent = "🔈 Tắt nhạc";
-      }
+        playMusic();
+      }
     });
   </script>
 </body>
 </html>
-
