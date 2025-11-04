@@ -268,6 +268,16 @@
       }
       playing = !playing;
     });
+  if (playing) {
+        music.pause();
+        toggle.textContent = "🔊 Bật nhạc";
+      } else {
+        music.play();
+        music.pause();
+        toggle.textContent = "🔈 Tắt nhạc";
+      }
+      playing = !playing;
+    });
   </script>
 </body>
 </html>
