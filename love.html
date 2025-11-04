@@ -259,21 +259,12 @@
     const toggle = document.getElementById("music-toggle");
     let playing = false;
     toggle.addEventListener("click", () => {
-      if (!playing) {
-        music.play();
-        toggle.textContent = "🔊 Tắt nhạc";
-      } else {
-        music.pause();
-        toggle.textContent = "🔈 Bật nhạc";
-      }
-      playing = !playing;
-    });
+
   if (playing) {
         music.pause();
         toggle.textContent = "🔊 Bật nhạc";
       } else {
-        music.play();
-        music.pause();
+        music.play();
         toggle.textContent = "🔈 Tắt nhạc";
       }
       playing = !playing;
