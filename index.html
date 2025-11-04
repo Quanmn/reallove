@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chú mèo dễ thương</title>
+  <style>
+    body {
+      font-family: "Poppins", Arial, sans-serif;
+      text-align: center;
+      background-color: #fbe7d8;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 100px;
+      position: relative;
+      z-index: 1;
+      padding: 0 20px;
+    }
+
+    #cat-img {
+      width: 300px;
+      height: auto;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      transition: transform 0.3s ease;
+    }
+
+    #cat-img:hover {
+      transform: scale(1.05);
+    }
+
+    p {
+      font-size: 22px;
+      color: #333;
+      margin-top: 20px;
+      font-weight: 500;
+    }
+
+    #buttons {
+      margin-top: 20px;
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    button {
+      padding: 12px 25px;
+      font-size: 18px;
+      cursor: pointer;
+      border: none;
+      border-radius: 10px;
+      transition: transform 0.2s, background-color 0.2s;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+    }
+
+    #yes-btn {
+      background-color: #ff4d6d;
+      color: white;
+    }
+
+    #no-btn {
+      background-color: #f44336;
+      color: white;
+      position: relative;
+    }
+
+    /* Màn hình loading */
+    #heart-loading {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      z-index: 10;
+      width: 100%;
+    }
+
+    .heart-container {
+      position: relative;
+      width: 200px;
+      height: 180px;
+      margin: 0 auto;
+    }
+
+    .heart-shape {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 200px;
+      height: 180px;
+      background-color: #ffb6c1;
+      clip-path: path("M100 180 L20 100 A40 40 0 1 1 100 60 A40 40 0 1 1 180 100 Z");
+      overflow: hidden;
+    }
+
+    .heart-fill {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #ff4d6d, #ff80a0);
+      transition: width 0.1s linear;
+      clip-path: path("M100 180 L20 100 A40 40 0 1 1 100 60 A40 40 0 1 1 180 100 Z");
+    }
+
+    #loading-text {
+      font-size: 22px;
+      color: #ff4d6d;
+      margin-top: 25px;
+      font-weight: bold;
+    }
+
+    /* --- Responsive Design --- */
+    @media (max-width: 768px) {
+      #cat-img {
+        width: 220px;
+      }
+
+      p {
+        font-size: 18px;
+      }
+
+      button {
+        font-size: 16px;
+        padding: 10px 20px;
+      }
+
+      .heart-container {
+        width: 160px;
+        height: 140px;
+      }
+
+      #loading-text {
+        font-size: 18px;
+      }
+
+      .container {
+        margin-top: 70px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        overflow: visible;
+      }
+
+      #cat-img {
+        width: 180px;
+      }
+
+      p {
+        font-size: 16px;
+      }
+
+      button {
+        font-size: 14px;
+        padding: 8px 18px;
+      }
+
+      .heart-container {
+        width: 140px;
+        height: 120px;
+      }
+
+      #loading-text {
+        font-size: 16px;
+      }
+
+      .container {
+        margin-top: 50px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="main-content">
+    <img src="./love1.jpeg" alt="Chú mèo dễ thương" id="cat-img">
+    <p>Bé sẽ là tình yêu của anh chứ? 💖</p>
+    <div id="buttons">
+      <button id="yes-btn">Yes</button>
+      <button id="no-btn" onclick="moveButton()">No</button>
+    </div>
+  </div>
+
+  <!-- Hiệu ứng trái tim loading -->
+  <div id="heart-loading">
+    <div class="heart-container">
+      <div class="heart-shape"></div>
+      <div class="heart-fill" id="heart-bar"></div>
+    </div>
+    <div id="loading-text">Loading... 0%</div>
+  </div>
+
+  <script>
+    // Nút "No" chạy trốn
+    function moveButton() {
+      const noButton = document.getElementById("no-btn");
+      const x = Math.random() * (window.innerWidth - noButton.clientWidth);
+      const y = Math.random() * (window.innerHeight - noButton.clientHeight);
+      noButton.style.position = "absolute";
+      noButton.style.left = `${x}px`;
+      noButton.style.top = `${y}px`;
+    }
+
+    // Khi nhấn Yes
+    document.getElementById("yes-btn").onclick = function() {
+      document.getElementById("main-content").style.display = "none";
+      const heartLoader = document.getElementById("heart-loading");
+      const heartBar = document.getElementById("heart-bar");
+      const loadingText = document.getElementById("loading-text");
+      heartLoader.style.display = "block";
+
+      let percent = 0;
+      const interval = setInterval(() => {
+        percent++;
+        heartBar.style.width = percent + "%";
+        loadingText.textContent = "Loading... " + percent + "%";
+
+        if (percent >= 100) {
+          clearInterval(interval);
+          setTimeout(() => {
+            window.location.href = "http://127.0.0.1:5500/heart.html";
+          }, 600);
+        }
+      }, 40);
+    };
+  </script>
+</body>
+</html>

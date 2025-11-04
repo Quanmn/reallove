@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Love 💞</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      height: 100vh;
+      background: radial-gradient(circle at center, #000010, #000);
+      font-family: "Poppins", cursive, sans-serif;
+      touch-action: manipulation;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
+
+    /* 💖 Chữ & tim rơi */
+    .falling-item {
+      position: absolute;
+      font-weight: bold;
+      opacity: 0;
+      animation: floatDown linear forwards, colorPulse 4s ease-in-out infinite alternate;
+      pointer-events: none;
+      will-change: transform, opacity, color, filter;
+      white-space: nowrap;
+      text-align: center;
+    }
+
+    @keyframes floatDown {
+      0% { transform: translateY(-10vh); opacity: 0; }
+      10% { opacity: 1; }
+      100% { transform: translateY(110vh); opacity: 0; }
+    }
+
+    @keyframes colorPulse {
+      0% {
+        filter: brightness(1);
+        text-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
+      }
+      50% {
+        filter: brightness(1.5);
+        text-shadow: 0 0 25px currentColor, 0 0 50px currentColor;
+      }
+      100% {
+        filter: brightness(1);
+        text-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
+      }
+    }
+
+    #music-toggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 30px;
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      backdrop-filter: blur(8px);
+      cursor: pointer;
+      font-size: 16px;
+      z-index: 10;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    #music-toggle:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.05);
+    }
+
+    /* 🌸 Responsive Design */
+    @media (max-width: 1024px) {
+      #music-toggle {
+        font-size: 15px;
+        padding: 8px 16px;
+        bottom: 18px;
+        right: 18px;
+      }
+      .falling-item {
+        font-size: 18px !important;
+      }
+    }
+
+    @media (max-width: 768px) {
+      #music-toggle {
+        font-size: 14px;
+        padding: 7px 14px;
+        bottom: 15px;
+        right: 15px;
+      }
+      .falling-item {
+        font-size: 16px !important;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        overflow: visible;
+      }
+
+      #music-toggle {
+        font-size: 13px;
+        padding: 6px 12px;
+        bottom: 12px;
+        right: 12px;
+      }
+
+      .falling-item {
+        font-size: 14px !important;
+        line-height: 1.2;
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="stars"></canvas>
+
+  <button id="music-toggle">🔈 Bật nhạc</button>
+
+  <audio id="bg-music" loop>
+    <source src="https://cdn.pixabay.com/download/audio/2021/09/30/audio_39b2e2c9c3.mp3?filename=romantic-love-story-11222.mp3" type="audio/mp3">
+  </audio>
+
+  <script>
+    const canvas = document.getElementById("stars");
+    const ctx = canvas.getContext("2d");
+    let w, h, stars = [], shootingStars = [];
+
+    function resize() {
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
+    }
+    window.addEventListener("resize", resize);
+    resize();
+
+    // 🌌 Tạo nền sao
+    for (let i = 0; i < 400; i++) {
+      stars.push({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        r: Math.random() * 1.3,
+        speed: Math.random() * 0.4 + 0.15
+      });
+    }
+
+    // 🌠 Tạo sao băng
+    function createShootingStar() {
+      const dir = Math.floor(Math.random() * 4);
+      let x, y, vx, vy;
+      const speed = 12 + Math.random() * 3;
+      if (dir === 0) { x = -50; y = Math.random() * h; vx = speed; vy = (Math.random() - 0.5) * 1.2; }
+      else if (dir === 1) { x = w + 50; y = Math.random() * h; vx = -speed; vy = (Math.random() - 0.5) * 1.2; }
+      else if (dir === 2) { x = Math.random() * w; y = -50; vx = (Math.random() - 0.5) * 1.5; vy = speed; }
+      else { x = Math.random() < 0.5 ? -50 : w + 50; y = Math.random() * h * 0.5; vx = x < 0 ? speed : -speed; vy = 6; }
+
+      shootingStars.push({ x, y, vx, vy, alpha: 1 });
+    }
+
+    let lastTime = performance.now(), starTimer = 0;
+    function draw(now) {
+      const delta = (now - lastTime) / 16.67;
+      lastTime = now;
+      ctx.clearRect(0, 0, w, h);
+
+      // 🌌 Nền sao
+      ctx.fillStyle = "white";
+      for (let s of stars) {
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fill();
+        s.y += s.speed * delta;
+        if (s.y > h) s.y = 0;
+      }
+
+      // 🌠 Sao băng
+      ctx.lineWidth = 2;
+      for (let i = shootingStars.length - 1; i >= 0; i--) {
+        const s = shootingStars[i];
+        ctx.beginPath();
+        ctx.moveTo(s.x, s.y);
+        ctx.lineTo(s.x - s.vx * 3, s.y - s.vy * 3);
+        ctx.strokeStyle = `rgba(255,255,255,${s.alpha})`;
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = "#fff";
+        ctx.stroke();
+        s.x += s.vx * delta;
+        s.y += s.vy * delta;
+        s.alpha -= 0.015 * delta;
+        if (s.alpha <= 0) shootingStars.splice(i, 1);
+      }
+
+      // 🚀 tạo sao băng đều tay hơn
+      starTimer += delta;
+      if (starTimer > 200) {
+        createShootingStar();
+        starTimer = 0;
+      }
+
+      requestAnimationFrame(draw);
+    }
+    requestAnimationFrame(draw);
+
+    // 💞 Câu chữ & tim
+    // 💖 Các câu chữ định sẵn
+    const lines = [
+      "Tặng cho Minh Ánh nè 💌",
+      "Cảm ơn em vì đã chọn anh 💞",
+      "Từ giây phút này, tim anh thuộc về em rồi 💖",
+      "Em đến và làm cuộc đời anh rạng rỡ hơn💘",
+      "Minh Quân yêu Minh Ánh <3",
+      "Được khum ạ, hehehh ^^",
+      "Mãi bên nhau em nhớ :3",
+      "Tui yêu thương Minh Ánh nhìu lắm ạ💓",
+      "Dạ, vâng ạ :3",
+      "Mãi iuuu bé nhooo 💌",
+      "Yêu em quá trời lunnn 💕",
+      "Tuiii iu emm nhìu hơn em nghĩ á 💝",
+      "Ai lớp Minh Ánh liu liuuu 😛",
+      "Ghét nhưng vẫn yêu tuiii nhaaa",
+      "Chính công chúa đó 👸",
+      "Pháp luật nào cấm nam iu nữ 🤔",
+      "Công lý nào cấm nữ iu nam🗨️🗨️",
+      "Anh xin mở phiên tòa xét xử👀👀",
+      "Xử em vì tội đánh cắp trái tim 💖 a"
+    ];
+    const hearts = ["💗","💖","💞","💓","💘","💝","💌","💟","💕"];
+
+    function createFallingItem(content) {
+      const el = document.createElement("div");
+      el.className = "falling-item";
+      el.innerText = content;
+      const hue = 320 + Math.random() * 20;
+      const light = 55 + Math.random() * 25;
+      el.style.color = `hsl(${hue}, 100%, ${light}%)`;
+      el.style.left = Math.random() * 100 + "vw";
+      el.style.fontSize = (Math.random() * 20 + 20) + "px";
+      el.style.animationDuration = (Math.random() * 6 + 10) + "s";
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 15000);
+    }
+
+    function createHeart() {
+      createFallingItem(hearts[Math.floor(Math.random() * hearts.length)]);
+    }
+
+    // 💞 Sinh hiệu ứng
+    setInterval(() => createFallingItem(lines[Math.floor(Math.random() * lines.length)]), 900);
+    setInterval(createHeart, 400);
+
+    // 🎵 Nhạc nền
+    const music = document.getElementById("bg-music");
+    const toggle = document.getElementById("music-toggle");
+    let playing = false;
+    toggle.addEventListener("click", () => {
+      if (!playing) {
+        music.play();
+        toggle.textContent = "🔊 Tắt nhạc";
+      } else {
+        music.pause();
+        toggle.textContent = "🔈 Bật nhạc";
+      }
+      playing = !playing;
+    });
+  </script>
+</body>
+</html>
